@@ -3,11 +3,13 @@ import { Button, Form, Segment } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
 interface Props {
   activity: Activity | undefined;
+  submitting: boolean;
   closeForm: () => void;
   createOrEdit: (activity: Activity) => void;
 }
 const ActivityForm = ({
   activity: selectedActivity,
+  submitting,
   closeForm,
   createOrEdit,
 }: Props) => {
@@ -24,7 +26,7 @@ const ActivityForm = ({
   const [activity, setActivity] = useState<Activity>(initialState);
 
   const handleSubmit = () => {
-    console.log(activity);
+    createOrEdit(activity);
   };
 
   const handleInputChange = (
@@ -55,6 +57,7 @@ const ActivityForm = ({
           onChange={handleInputChange}
         />
         <Form.Input
+          type='date'
           placeholder='Date'
           value={activity.date}
           name='date'
@@ -77,6 +80,7 @@ const ActivityForm = ({
           positive
           type='submit'
           content='Submit'
+          loading={submitting}
         ></Button>
         <Button
           onClick={() => closeForm()}
