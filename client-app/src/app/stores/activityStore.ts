@@ -22,12 +22,13 @@ export default class ActivityStore {
   }
 
   loadActivities = async () => {
+    this.setInitialLoading(true);
     try {
       const activities = await agent.Activities.list();
       activities.forEach((activity) => {
         activity.date = activity.date.split('T')[0];
         //this.activities.push(activity);
-        this.activityRegistry.set(activity.id, activity);
+        this.setActivity(activity);
       });
       this.setInitialLoading(false);
     } catch (error) {
@@ -36,21 +37,34 @@ export default class ActivityStore {
     }
   };
 
-  selectActivity = (id: string) => {
-    this.selectedActivity = this.activityRegistry.get(id);
+  loadActivity = async (id: string) => {
+    let activity = this.getActivity(id);
+    if (activity) {
+      this.selectedActivity = activity;
+      return activity;
+    } else {
+      this.setInitialLoading(true);
+      try {
+        activity = await agent.Activities.details(id);
+        activity.date = activity.date.split('T')[0];
+        this.setActivity(activity);
+        runInAction(() => {
+          this.selectedActivity = activity;
+        });
+        this.setInitialLoading(false);
+        return activity;
+      } catch (error) {
+        console.log(error);
+        this.setInitialLoading(false);
+      }
+    }
   };
 
-  cancelSelectActivity = () => {
-    this.selectedActivity = undefined;
+  private getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
   };
-
-  openForm = (id?: string) => {
-    id ? this.selectActivity(id) : this.cancelSelectActivity();
-    this.editMode = true;
-  };
-
-  closeForm = () => {
-    this.editMode = false;
+  private setActivity = (activity: Activity) => {
+    this.activityRegistry.set(activity.id, activity);
   };
 
   createActivity = async (activity: Activity) => {
@@ -96,9 +110,6 @@ export default class ActivityStore {
       await agent.Activities.delete(id);
       runInAction(() => {
         this.activityRegistry.delete(id);
-        if (this.selectedActivity?.id === id) {
-          this.cancelSelectActivity();
-        }
         this.loading = false;
       });
     } catch (error) {

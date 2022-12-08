@@ -1,19 +1,24 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Button, Form, Segment } from 'semantic-ui-react';
 import { Activity } from '../../../app/models/activity';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { v4 as uuid } from 'uuid';
+import LoadingComponent from '../../../app/layout/LoadingComponent';
 
 const ActivityForm = () => {
   const { activityStore } = useStore();
   const {
-    selectedActivity,
-    closeForm,
+    loading,
+    loadingInitial,
+    loadActivity,
     createActivity,
     updateActivity,
-    loading,
   } = activityStore;
-  const initialState = selectedActivity ?? {
+  const { id } = useParams();
+
+  const [activity, setActivity] = useState<Activity>({
     id: '',
     title: '',
     category: '',
@@ -21,15 +26,23 @@ const ActivityForm = () => {
     date: '',
     city: '',
     venue: '',
-  };
+  });
+  const navigate = useNavigate();
 
-  const [activity, setActivity] = useState<Activity>(initialState);
+  useEffect(() => {
+    if (id) loadActivity(id).then((activity) => setActivity(activity!));
+  }, [id, loadActivity]);
 
   const handleSubmit = () => {
-    if (activity.id) {
-      updateActivity(activity);
+    if (!activity.id) {
+      activity.id = uuid();
+      createActivity(activity).then(() =>
+        navigate(`/activities/${activity.id}`)
+      );
     } else {
-      createActivity(activity);
+      updateActivity(activity).then(() =>
+        navigate(`/activities/${activity.id}`)
+      );
     }
   };
 
@@ -39,6 +52,9 @@ const ActivityForm = () => {
     const { name, value } = event.target;
     setActivity({ ...activity, [name]: value });
   };
+
+  if (loadingInitial) return <LoadingComponent content='Loading Activity...' />;
+
   return (
     <Segment clearing>
       <Form onSubmit={handleSubmit} autoComplete='off'>
@@ -87,7 +103,8 @@ const ActivityForm = () => {
           loading={loading}
         ></Button>
         <Button
-          onClick={() => closeForm()}
+          as={Link}
+          to='/activities'
           floated='right'
           type='button'
           content='Cancel'
