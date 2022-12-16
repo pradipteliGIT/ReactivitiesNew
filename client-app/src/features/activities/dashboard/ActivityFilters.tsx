@@ -11,7 +11,10 @@ function ActivityFilters() {
         <Menu.Item content="I'm going" />
         <Menu.Item content="I'm hosting'" />
       </Menu>
-      <Calendar />
+      <Menu vertical size='large' style={{ width: '100%', marginTop: 28 }}>
+        <Header icon='calendar' attached color='teal' content='Select Date' />
+        <Calendar />
+      </Menu>
     </>
   );
 }
