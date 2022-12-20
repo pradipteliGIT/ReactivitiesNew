@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Button, Header, Segment } from 'semantic-ui-react';
-import { Activity } from '../../../app/models/activity';
+import { ActivityFormValues } from '../../../app/models/activity';
 import { useStore } from '../../../app/stores/store';
 import { observer } from 'mobx-react-lite';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -16,24 +16,10 @@ import MyDateInput from '../../../app/common/form/MyDateInput';
 
 const ActivityForm = () => {
   const { activityStore } = useStore();
-  const {
-    loading,
-    loadingInitial,
-    loadActivity,
-    createActivity,
-    updateActivity,
-  } = activityStore;
+  const { loadingInitial, loadActivity, createActivity, updateActivity } = activityStore;
   const { id } = useParams();
 
-  const [activity, setActivity] = useState<Activity>({
-    id: '',
-    title: '',
-    category: '',
-    description: '',
-    date: null,
-    city: '',
-    venue: '',
-  });
+  const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -45,19 +31,15 @@ const ActivityForm = () => {
     venue: Yup.string().required(),
   });
   useEffect(() => {
-    if (id) loadActivity(id).then((activity) => setActivity(activity!));
+    if (id) loadActivity(id).then((activity) => setActivity(new ActivityFormValues(activity)));
   }, [id, loadActivity]);
 
-  const handleFromSubmit = (activity: Activity) => {
+  const handleFromSubmit = (activity: ActivityFormValues) => {
     if (!activity.id) {
       activity.id = uuid();
-      createActivity(activity).then(() =>
-        navigate(`/activities/${activity.id}`)
-      );
+      createActivity(activity).then(() => navigate(`/activities/${activity.id}`));
     } else {
-      updateActivity(activity).then(() =>
-        navigate(`/activities/${activity.id}`)
-      );
+      updateActivity(activity).then(() => navigate(`/activities/${activity.id}`));
     }
   };
 
@@ -76,11 +58,7 @@ const ActivityForm = () => {
           <Form className='ui form' onSubmit={handleSubmit} autoComplete='off'>
             <MyTextInput placeholder='Title' name='title' />
             <MyTextArea rows={3} placeholder='Description' name='description' />
-            <MySelectInput
-              options={categoryOptions}
-              placeholder='Category'
-              name='category'
-            />
+            <MySelectInput options={categoryOptions} placeholder='Category' name='category' />
             <MyDateInput
               placeholderText='Date'
               name='date'
@@ -96,7 +74,7 @@ const ActivityForm = () => {
               positive
               type='submit'
               content='Submit'
-              loading={loading}
+              loading={isSubmitting}
               disabled={isSubmitting || !isValid || !isValid}
             ></Button>
             <Button

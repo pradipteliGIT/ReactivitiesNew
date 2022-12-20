@@ -28,25 +28,13 @@ function RegisterForm() {
       })}
     >
       {({ handleSubmit, isSubmitting, errors, isValid, dirty }) => (
-        <Form
-          className='ui form error'
-          onSubmit={handleSubmit}
-          autoComplete='off'
-        >
-          <Header
-            as='h2'
-            content='Login to Reactivities'
-            color='teal'
-            textAlign='center'
-          />
+        <Form className='ui form error' onSubmit={handleSubmit} autoComplete='off'>
+          <Header as='h2' content='Login to Reactivities' color='teal' textAlign='center' />
           <MyTextInput placeholder='DisplayName' name='displayName' />
           <MyTextInput placeholder='UserName' name='userName' />
           <MyTextInput placeholder='Email' name='email' type='email' />
           <MyTextInput placeholder='Password' name='password' type='password' />
-          <ErrorMessage
-            name='error'
-            render={() => <ValidationError errors={errors.error} />}
-          />
+          <ErrorMessage name='error' render={() => <ValidationError errors={errors.error} />} />
           <Button
             loading={isSubmitting}
             disabled={!isValid || !dirty || isSubmitting}

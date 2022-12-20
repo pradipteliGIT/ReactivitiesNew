@@ -5,13 +5,7 @@ import { Segment, Header, Comment, Form, Button } from 'semantic-ui-react';
 export default observer(function ActivityDetailedChat() {
   return (
     <>
-      <Segment
-        textAlign='center'
-        attached='top'
-        inverted
-        color='teal'
-        style={{ border: 'none' }}
-      >
+      <Segment textAlign='center' attached='top' inverted color='teal' style={{ border: 'none' }}>
         <Header>Chat about this event</Header>
       </Segment>
       <Segment attached>
@@ -46,12 +40,7 @@ export default observer(function ActivityDetailedChat() {
 
           <Form reply>
             <Form.TextArea />
-            <Button
-              content='Add Reply'
-              labelPosition='left'
-              icon='edit'
-              primary
-            />
+            <Button content='Add Reply' labelPosition='left' icon='edit' primary />
           </Form>
         </Comment.Group>
       </Segment>

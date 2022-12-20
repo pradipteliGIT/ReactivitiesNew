@@ -23,9 +23,7 @@ function MySelectInput(props: Props) {
         onBlur={() => helpers.setTouched(true)}
         placeholder={props.placeholder}
       />
-      {meta.touched && meta.error ? (
-        <Label basic color='red' content={meta.error} />
-      ) : null}
+      {meta.touched && meta.error ? <Label basic color='red' content={meta.error} /> : null}
     </Form.Field>
   );
 }
