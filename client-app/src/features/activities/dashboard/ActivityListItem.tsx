@@ -16,27 +16,32 @@ function ActivityListItem({ activity }: Props) {
           <Label attached='top' color='red' content='Cancelled' style={{ textAlign: 'center' }} />
         )}
         <Item.Group>
-          <Item.Image size='tiny' circular src='/assets/user.png' />
-          <Item.Content>
-            <Item.Header as={Link} to={`/activities/${activity.id}`}>
-              {activity.title}
-            </Item.Header>
-            <Item.Description>Hosted By {activity.host?.displayName}</Item.Description>
-            {activity.isHost && (
+          <Item>
+            <Item.Image size='tiny' circular src={activity.host?.image || '/assets/user.png'} />
+            <Item.Content>
+              <Item.Header as={Link} to={`/activities/${activity.id}`}>
+                {activity.title}
+              </Item.Header>
               <Item.Description>
-                <Label basic color='orange'>
-                  You are hosting this activity
-                </Label>
+                Hosted By{' '}
+                <Link to={`/profiles/${activity.hostUsername}`}>{activity.host?.displayName}</Link>
               </Item.Description>
-            )}
-            {activity.isGoing && !activity.isHost && (
-              <Item.Description>
-                <Label basic color='green'>
-                  You are going to this activity
-                </Label>
-              </Item.Description>
-            )}
-          </Item.Content>
+              {activity.isHost && (
+                <Item.Description>
+                  <Label basic color='orange'>
+                    You are hosting this activity
+                  </Label>
+                </Item.Description>
+              )}
+              {activity.isGoing && !activity.isHost && (
+                <Item.Description>
+                  <Label basic color='green'>
+                    You are going to this activity
+                  </Label>
+                </Item.Description>
+              )}
+            </Item.Content>
+          </Item>
         </Item.Group>
       </Segment>
       <Segment>

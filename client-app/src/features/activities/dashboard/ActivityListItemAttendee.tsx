@@ -14,9 +14,7 @@ function ActivityListItemAttendee({ attendees }: Props) {
     <List horizontal>
       {attendees.map((attendee) => (
         <Popup
-          style={{ zIndex: 100000 }}
           hoverable
-          flowing
           key={attendee.userName}
           trigger={
             <List.Item key={attendee.userName} as={Link} to={`/profiles/${attendee.userName}`}>
