@@ -75,7 +75,7 @@ const ActivityForm = () => {
               type='submit'
               content='Submit'
               loading={isSubmitting}
-              disabled={isSubmitting || !isValid || !isValid}
+              disabled={isSubmitting || !isValid || !dirty}
             ></Button>
             <Button
               as={Link}
