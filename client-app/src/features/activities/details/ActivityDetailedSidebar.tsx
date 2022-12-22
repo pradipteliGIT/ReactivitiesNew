@@ -31,7 +31,7 @@ export default observer(function ActivityDetailedSidebar({ activity: { attendees
                 </Label>
               )}
 
-              <Image size='tiny' src={'/assets/user.png'} />
+              <Image size='tiny' src={attendee.image || '/assets/user.png'} />
               <Item.Content verticalAlign='middle'>
                 <Item.Header as='h3'>
                   <Link to={`/profiles/${attendee.userName}`}>{attendee.userName}</Link>
